@@ -8,26 +8,51 @@
 import UIKit
 import Alamofire
 import SwiftyJSON
+import Kingfisher
 
 class ViewController: UIViewController {
+    
 
+    @IBOutlet var beerImageView: UIImageView!
+    @IBOutlet var nameLabel: UILabel!
+    @IBOutlet var descriptionLabel: UILabel!
+    
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        callRequest()
+        descriptionLabel.numberOfLines = 0
+    
         
+        
+        callRequest()
     }
     
     
     func callRequest() {
         
-        let url = "http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888&targetDt=20120101"
+        let url = "https://api.punkapi.com/v2/beers/random"
         
         AF.request(url, method: .get).validate().responseJSON { response in
             switch response.result {
             case .success(let value):
                 let json = JSON(value)
                 print("JSON: \(json)")
+                
+                
+                
+                let url = URL(string: json[0]["image_url"].stringValue)
+                
+                self.beerImageView.kf.setImage(with: url)
+                self.nameLabel.text = "name : " + json[0]["name"].stringValue
+                self.descriptionLabel.text = "descripption : " + json[0]["description"].stringValue
+                
+    
+                
+                
+                
             case .failure(let error):
                 print(error)
             }
